@@ -2,6 +2,7 @@ extern crate websocket;
 extern crate serde;
 extern crate serde_json;
 
+use serde_json::json;
 use colored::*;
 use std::io::stdin;
 use serde_json::Value;
@@ -14,6 +15,7 @@ use websocket::{Message, OwnedMessage};
 const CONNECTION: &'static str = "ws://127.0.0.1:9944";
 
 fn main() {
+    let mut counter = 1;
     println!("Connecting to {}", CONNECTION);
     let client = ClientBuilder::new(CONNECTION)
         .unwrap()
@@ -210,9 +212,61 @@ COMMANDS:
             }
             // Send a ping
             "/ping" => OwnedMessage::Ping(b"PING".to_vec()),
-            // Otherwise, just send text
-            _ => OwnedMessage::Text(trimmed.to_string()),
+
+            // system
+            "/system_name" => {
+                let msg = json!({
+                    "jsonrpc": "2.0",
+                    "id": counter,
+                    "method": "system_name"
+                });
+                OwnedMessage::Text(msg.to_string())
+            },
+            "/system_version" => {
+                let msg = json!({
+                    "jsonrpc": "2.0",
+                    "id": counter,
+                    "method": "system_version"
+                });
+                OwnedMessage::Text(msg.to_string())
+            },
+            "/system_chain" => {
+                let msg = json!({
+                    "jsonrpc": "2.0",
+                    "id": counter,
+                    "method": "system_chain"
+                });
+                OwnedMessage::Text(msg.to_string())
+            },
+            "/system_properties" => {
+                let msg = json!({
+                    "jsonrpc": "2.0",
+                    "id": counter,
+                    "method": "system_properties"
+                });
+                OwnedMessage::Text(msg.to_string())
+            },
+            "/system_health" => {
+                let msg = json!({
+                    "jsonrpc": "2.0",
+                    "id": counter,
+                    "method": "system_health"
+                });
+                OwnedMessage::Text(msg.to_string())
+            },
+            "/system_peers" => {
+                let msg = json!({
+                    "jsonrpc": "2.0",
+                    "id": counter,
+                    "method": "system_peers"
+                });
+                OwnedMessage::Text(msg.to_string())
+            },
+            _ => {
+                OwnedMessage::Text(trimmed.to_string())
+            },
         };
+        counter += 1;
         match tx.send(message) {
             Ok(()) => (),
             Err(e) => {
@@ -226,3 +280,4 @@ COMMANDS:
     let _ = receive_loop.join();
     println!("Exited");
 }
+
