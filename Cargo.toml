@@ -1,0 +1,7 @@
+[package]
+name = "tiny-substrate-client"
+version = "0.1.0"
+authors = ["Ozaki Yoichi <zak@nli.ics.keio.ac.jp>"]
+edition = "2018"
+
+[dependencies]
