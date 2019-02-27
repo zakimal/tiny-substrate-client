@@ -215,109 +215,6 @@ COMMANDS:
             // Send a ping
             "/ping" => OwnedMessage::Ping(b"PING".to_vec()),
 
-            // Show help message
-            "/help" => {
-                println!(r#"
-
-████████╗██╗███╗   ██╗██╗   ██╗    ███████╗██╗   ██╗██████╗ ███████╗████████╗██████╗  █████╗ ████████╗███████╗     ██████╗██╗     ██╗███████╗███╗   ██╗████████╗
-╚══██╔══╝██║████╗  ██║╚██╗ ██╔╝    ██╔════╝██║   ██║██╔══██╗██╔════╝╚══██╔══╝██╔══██╗██╔══██╗╚══██╔══╝██╔════╝    ██╔════╝██║     ██║██╔════╝████╗  ██║╚══██╔══╝
-   ██║   ██║██╔██╗ ██║ ╚████╔╝     ███████╗██║   ██║██████╔╝███████╗   ██║   ██████╔╝███████║   ██║   █████╗      ██║     ██║     ██║█████╗  ██╔██╗ ██║   ██║
-   ██║   ██║██║╚██╗██║  ╚██╔╝      ╚════██║██║   ██║██╔══██╗╚════██║   ██║   ██╔══██╗██╔══██║   ██║   ██╔══╝      ██║     ██║     ██║██╔══╝  ██║╚██╗██║   ██║
-   ██║   ██║██║ ╚████║   ██║       ███████║╚██████╔╝██████╔╝███████║   ██║   ██║  ██║██║  ██║   ██║   ███████╗    ╚██████╗███████╗██║███████╗██║ ╚████║   ██║
-   ╚═╝   ╚═╝╚═╝  ╚═══╝   ╚═╝       ╚══════╝ ╚═════╝ ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚══════╝     ╚═════╝╚══════╝╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝
-
-COMMANDS:
-    /close
-        close the socket to the substrate chain.
-    /ping
-        ping
-
-    <SYSTEM>
-    /system_name
-        Return the name of this chain
-    /system_version
-        Return the version of this chain
-    /system_chain
-        Return the chain's level (?)
-    /system_properties
-        Return some properties like `isSyncing`, `peers`, `shouldHavePeers`
-    /system_health
-        Return the chain's health
-    /system_peers
-        Return the list of peers
-
-    <STATE>
-    /state_call <name> <bytes> <hash>
-        Call a contract at a block's state.
-    /state_callAt <name> <bytes> <hash>
-        Same above.
-    /state_getKeys <key> <hash>
-        Returns the keys with prefix, leave empty to get all the keys
-    /state_getStorage <key> <hash>
-        Returns a storage entry at a specific block's state.
-    /state_getStorageAt <key> <hash>
-        Same above.
-    /state_getStorageHash <key> <hash>
-        Returns the hash of a storage entry at a block's state.
-    /state_getStorageHashAt <key> <hash>
-        Same above.
-    /state_getMetadata <hash>
-        Return the runtime metadata as an opaque blob.
-    /state_getRuntimeVersion <hash>
-        Get the runtime version.
-    /chain_getRuntimeVersion <hash>
-        Same above.
-    /state_queryStorage <key>, <key>..., <block>, <hash>
-        Query historical storage entries (by key) starting from a block given as the second parameter.
-    /state_subscribeRuntimeVersion <metadata> <subscriber>
-        New runtime version subscription.
-    /chain_subscribeRuntimeVersion <metadata> <subscriber>
-        Same above.
-    /state_unsubscribeRuntimeVersion <metadata> <subscription id>
-        Unsubscribe from runtime version subscription.
-    /chain_unsubscribeRuntimeVersion <metadata> <subscription id>
-        Same above.
-    /state_subscribeStorage <metadata> <name>
-        New storage subscription.
-    state_unsubscribeStorage <metadata> <subscription id>
-        Unsubscribe from storage subscription.
-
-    <CHAIN>
-    /chain_getHeader <hash>
-        Get header of a relay chain block.
-    /chain_getBlock <hash>
-        Get header and body of a relay chain block.
-    /chain_getBlockHash <number>
-        Get hash of the n-th block in the canon chain.
-        By default returns latest block hash.
-    /chain_getHead <number>
-        Same above.
-    /chain_getFinalisedHead
-        Get hash of the last finalised block in the canon chain.
-    /chain_subscribeNewHead <metadata> <subscriber>
-        New head subscription.
-    /subscribe_newHead <metadata> <subscriber>
-        Same above.
-    /chain_unsubscribeNewHead <metadata> <subscription id>
-        Unsubscribe from new head subscription.
-    /unsubscribe_newHead <metadata> <subscription id>
-        Same above.
-    /chain_subscribeFinalisedHeads <metadata> <subscriber>
-        New head subscription.
-    /chain_unsubscribeFinalisedHeads <metadata> <subscription id>
-        Unsubscribe from new head subscription.
-
-    <AHTHOR>
-    /author_submitExtrinsic <extrinsic>
-        Submit hex-encoded extrinsic for inclusion in block.
-    /author_pendingExtrinsics
-        Returns all pending extrinsics, potentially grouped by sender.
-    /author_submitAndWatchExtrinsic <metadata> <subscriber> <bytes>
-        Submit an extrinsic to watch.
-    /author_unwatchExtrinsic <metadata> <subscription id>
-        Unsubscribe from extrinsic watching.
-    "#)
-            },
             // system
             "/system_name" => {
                 let msg = json!({
@@ -364,6 +261,17 @@ COMMANDS:
                     "jsonrpc": "2.0",
                     "id": counter,
                     "method": "system_peers"
+                });
+                OwnedMessage::Text(msg.to_string())
+            },
+            "/get_balance" => {
+                // AliceのAccountId: 0xce3f3d8f09e3411403f5ca59d042a40e
+                // {"id":437,"jsonrpc":"2.0","method":"state_subscribeStorage","params":[["0xce3f3d8f09e3411403f5ca59d042a40e"]]}
+                let msg = json!({
+                    "jsonrpc": "2.0",
+                    "id": counter,
+                    "method": "state_subscribeStorage",
+                    "params": [["0xce3f3d8f09e3411403f5ca59d042a40e"]]
                 });
                 OwnedMessage::Text(msg.to_string())
             },
